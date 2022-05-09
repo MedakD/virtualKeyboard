@@ -34,6 +34,8 @@ const keyboard = {
   init() {
     const main = document.createElement('div');
     main.classList.add('main');
+    const textArea = document.createElement('textarea');
+    main.appendChild(textArea);
     document.body.appendChild(main);
     this._addKeyboardButtons();
   },
@@ -65,14 +67,27 @@ const keyboard = {
   },
 
   highlightButton(keyCode) {
-    const btnIndex = this.getLayout().findIndex(btn => btn.keyCode === keyCode);
+    const btnIndex = this._getBtnIndex(keyCode);
     const buttonToHighlight = document.querySelectorAll('.keyboard_wrap button')[btnIndex];
     buttonToHighlight.classList.toggle('active');
+  },
+
+  printButton(keyCode, DOMElement) {
+    DOMElement.innerHTML += this._getBtnTitle(keyCode);
+  },
+
+  _getBtnIndex(keyCode) {
+    return this.getLayout().findIndex(btn => btn.keyCode === keyCode);
+  },
+
+  _getBtnTitle(keyCode) {
+    return this.getLayout().find(btn => btn.keyCode === keyCode)?.title;
   }
 };
 
 window.addEventListener("DOMContentLoaded", function () {
   keyboard.init();
+  const areaToPrint = document.querySelector('textarea');
 
   document.addEventListener('keydown', (event) => {
     const { repeat } = event;
@@ -86,5 +101,6 @@ window.addEventListener("DOMContentLoaded", function () {
   document.addEventListener('keyup', (event) => {
     const keyCode = event.keyCode;
     keyboard.highlightButton(keyCode);
+    keyboard.printButton(keyCode, areaToPrint)
   });
 });

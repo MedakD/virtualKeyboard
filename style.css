@@ -16,7 +16,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin: auto;
+    margin: 0 auto auto;
 }
 
 .keyboard_row {
@@ -33,4 +33,10 @@ body {
 }
 button.active {
     background: #8a8adc;
+}
+textarea {
+    min-height: 20vh;
+    background: #8a8adc;
+    margin: auto auto 0;
+    min-width: 50vw;
 }
