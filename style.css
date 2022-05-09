@@ -9,12 +9,14 @@ body {
     flex-direction: column;
     margin: auto;
     gap: 30px;
+    min-height: 100vh;
 }
 
 .keyboard_wrap {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin: auto;
 }
 
 .keyboard_row {
