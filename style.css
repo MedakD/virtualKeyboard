@@ -29,3 +29,6 @@ body {
     color: inherit;
     cursor: pointer;
 }
+button.active {
+    background: #8a8adc;
+}

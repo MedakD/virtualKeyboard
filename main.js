@@ -48,8 +48,24 @@ const keyboard = {
     btnElement.innerHTML = button;
     row.appendChild(btnElement);
   },
+
+  highlightButton(key) {
+    const btnIndex = this.getLayout().indexOf(key);
+    const buttonToHighlight = document.querySelectorAll('.keyboard_wrap button')[btnIndex];
+    buttonToHighlight.classList.toggle('active');
+  }
 };
 
 window.addEventListener("DOMContentLoaded", function () {
   keyboard.init();
+
+  document.addEventListener('keydown', (event) => {
+    const keyName = event.key;
+    keyboard.highlightButton(keyName);
+  });
+
+  document.addEventListener('keyup', (event) => {
+    const keyName = event.key;
+    keyboard.highlightButton(keyName);
+  });
 });
