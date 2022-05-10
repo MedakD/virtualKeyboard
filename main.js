@@ -1,15 +1,17 @@
 const keyboard = {
+  localStorage: window.localStorage,
+
   state: {
-    lang: 'eng'
+    lang: localStorage.getItem('keyboardLang') || 'eng'
   },
 
   getLayout() {
     const layouts = {
       rus: [
-        'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
-        'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'Del',
-        'Caps Lock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
-        'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '/', '&uarr;', 'Shift',
+        'С‘', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+        'Tab', 'Р№', 'С†', 'Сѓ', 'Рє', 'Рµ', 'РЅ', 'Рі', 'С€', 'С‰', 'Р·', 'С…', 'СЉ', '\\', 'Del',
+        'Caps Lock', 'С„', 'С‹', 'РІ', 'Р°', 'Рї', 'СЂ', 'Рѕ', 'Р»', 'Рґ', 'Р¶', 'СЌ', 'Enter',
+        'Shift', 'СЏ', 'С‡', 'СЃ', 'Рј', 'Рё', 'С‚', 'СЊ', 'Р±', 'СЋ', '/', '&uarr;', 'Shift',
         'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '&larr;', '&darr;', '&rarr;', 'Ctrl'],
       eng: [
         '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
@@ -19,18 +21,17 @@ const keyboard = {
         'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '&larr;', '&darr;', '&rarr;', 'Ctrl'],
     };
 
-    const keyCodes = [
-      192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
-      9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220, 46,
-      20, 65, 83, 68, 70, 71, 72, 74, 75, 76, 186, 222, 13,
-      16, 90, 88, 67, 86, 66, 78, 77, 188, 190, 191, 38, 16,
-      17, 91, 18, 32, 18, 37, 40, 39, 17,
-    ];
+    const codes = [
+      'Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace',
+      'Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete',
+      'CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter',
+      'ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight',
+      'ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight'];
 
     return layouts[this.state.lang].map((btn, index) => {
       return {
         title: btn,
-        keyCode: keyCodes[index]
+        code: codes[index]
       }
     });
   },
@@ -42,6 +43,10 @@ const keyboard = {
     main.classList.add('main');
     const textArea = document.createElement('textarea');
     main.appendChild(textArea);
+    const info = document.createElement('h3');
+    info.classList.add('text_center');
+    info.innerHTML = 'To switch language please click Alt+Shift';
+    main.appendChild(info);
     document.body.appendChild(main);
     this._addKeyboardButtons();
   },
@@ -57,7 +62,7 @@ const keyboard = {
 
       const currentRowButtons = buttons.slice(prev, curr+prev);
 
-      currentRowButtons.forEach((button, index) => {
+      currentRowButtons.forEach((button) => {
         this._addButtonsToTheRow(row, button);
         keyboardWrap.appendChild(row);
       });
@@ -72,18 +77,25 @@ const keyboard = {
     row.appendChild(btnElement);
   },
 
-  highlightButton(keyCode) {
-    const btnIndex = this._getBtnIndex(keyCode);
-    const buttonToHighlight = document.querySelectorAll('.keyboard_wrap button')[btnIndex];
-    buttonToHighlight.classList.toggle('active');
+  toggleHighlightButton(event) {
+    const { code, type: eventType } = event;
+    const btnIndex = this._getBtnIndex(code);
+    const buttonElement = document.querySelectorAll('.keyboard_wrap button')[btnIndex];
+    if (eventType === 'keydown') {
+      buttonElement.classList.add('active');
+    } else if (eventType === 'keyup') {
+      buttonElement.classList.remove('active');
+    }
   },
 
-  printButton(keyCode, DOMElement) {
-    DOMElement.innerHTML += this._getBtnTitle(keyCode);
+  printButton(code, DOMElement) {
+    DOMElement.innerHTML += this._getBtnTitle(code);
   },
 
   changeLanguage() {
-    this.state.lang === 'eng' ? this.state.lang = 'rus' : this.state.lang = 'eng';
+    const newLanguage = this.state.lang === 'eng' ? 'rus' : 'eng';
+    this.state.lang = newLanguage;
+    localStorage.setItem('keyboardLang', newLanguage);
     this._reRenderKeyboard();
   },
 
@@ -93,12 +105,12 @@ const keyboard = {
     this._addKeyboardButtons();
   },
 
-  _getBtnIndex(keyCode) {
-    return this.getLayout().findIndex(btn => btn.keyCode === keyCode);
+  _getBtnIndex(code) {
+    return this.getLayout().findIndex(btn => btn.code === code);
   },
 
-  _getBtnTitle(keyCode) {
-    const sign = this.getLayout().find(btn => btn.keyCode === keyCode)?.title;
+  _getBtnTitle(code) {
+    const sign = this.getLayout().find(btn => btn.code === code)?.title;
     return sign.length > 1 ? '' : sign
   }
 };
@@ -108,20 +120,20 @@ window.addEventListener("DOMContentLoaded", function () {
   const areaToPrint = document.querySelector('textarea');
 
   document.addEventListener('keydown', (event) => {
+    event.preventDefault();
     const { repeat } = event;
-    if (event.keyCode === 18) {
+    if (event.altKey && event.shiftKey) {
       keyboard.changeLanguage();
     }
     if (repeat) {
       return;
     }
-    const keyCode = event.keyCode;
-    keyboard.highlightButton(keyCode);
+    keyboard.toggleHighlightButton(event);
   });
 
   document.addEventListener('keyup', (event) => {
-    const keyCode = event.keyCode;
-    keyboard.highlightButton(keyCode);
-    keyboard.printButton(keyCode, areaToPrint)
+    const code = event.code;
+    keyboard.toggleHighlightButton(event);
+    keyboard.printButton(code, areaToPrint)
   });
 });
