@@ -1,11 +1,16 @@
 const keyboard = {
   state: {
-    lang: 'eng' // TODO - add rus
+    lang: 'eng'
   },
 
   getLayout() {
     const layouts = {
-      rus: ['TODO'],
+      rus: [
+        'ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
+        'Tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ', '\\', 'Del',
+        'Caps Lock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', 'Enter',
+        'Shift', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '/', '&uarr;', 'Shift',
+        'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '&larr;', '&darr;', '&rarr;', 'Ctrl'],
       eng: [
         '`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace',
         'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\', 'Del',
@@ -13,6 +18,7 @@ const keyboard = {
         'Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '&uarr;', 'Shift',
         'Ctrl', 'Win', 'Alt', 'Space', 'Alt', '&larr;', '&darr;', '&rarr;', 'Ctrl'],
     };
+
     const keyCodes = [
       192, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 189, 187, 8,
       9, 81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 219, 221, 220, 46,
@@ -45,7 +51,7 @@ const keyboard = {
     const keyboardWrap = document.createElement('div');
     keyboardWrap.classList.add('keyboard_wrap');
 
-    this.keyRowsMap.reduce((prev, curr, rowIdx, arr) => {
+    this.keyRowsMap.reduce((prev, curr) => {
       const row = document.createElement('div');
       row.classList.add('keyboard_row');
 
@@ -76,6 +82,17 @@ const keyboard = {
     DOMElement.innerHTML += this._getBtnTitle(keyCode);
   },
 
+  changeLanguage() {
+    this.state.lang === 'eng' ? this.state.lang = 'rus' : this.state.lang = 'eng';
+    this._reRenderKeyboard();
+  },
+
+  _reRenderKeyboard() {
+    const keyboardWrap = document.querySelector('.keyboard_wrap');
+    keyboardWrap.remove();
+    this._addKeyboardButtons();
+  },
+
   _getBtnIndex(keyCode) {
     return this.getLayout().findIndex(btn => btn.keyCode === keyCode);
   },
@@ -91,6 +108,9 @@ window.addEventListener("DOMContentLoaded", function () {
 
   document.addEventListener('keydown', (event) => {
     const { repeat } = event;
+    if (event.keyCode === 18) {
+      keyboard.changeLanguage();
+    }
     if (repeat) {
       return;
     }
