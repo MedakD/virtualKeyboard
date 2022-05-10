@@ -98,7 +98,8 @@ const keyboard = {
   },
 
   _getBtnTitle(keyCode) {
-    return this.getLayout().find(btn => btn.keyCode === keyCode)?.title;
+    const sign = this.getLayout().find(btn => btn.keyCode === keyCode)?.title;
+    return sign.length > 1 ? '' : sign
   }
 };
 
