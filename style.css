@@ -1,0 +1,42 @@
+body {
+    background: #313131;
+    color: #d5e4e9;
+    margin: 0;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    gap: 30px;
+    min-height: 100vh;
+}
+
+.keyboard_wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0 auto auto;
+}
+
+.keyboard_row {
+    display: flex;
+    gap: 5px;
+}
+
+.keyboard_wrap button {
+    border: 1px solid #8a8adc;
+    padding: 6px 12px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+button.active {
+    background: #8a8adc;
+}
+textarea {
+    min-height: 20vh;
+    background: #8a8adc;
+    margin: auto auto 0;
+    min-width: 50vw;
+}
